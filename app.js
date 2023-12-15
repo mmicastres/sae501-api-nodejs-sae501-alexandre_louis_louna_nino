@@ -1,8 +1,8 @@
 const express = require('express')
 
  /* Connexion à couchDb*/
-// const nano = require("nano")("http://desouttter:Pb70e3c7@couchdb-desouttter.alwaysdata.net:5984");
-// const test = nano.db.use("desouttter_test")
+const nano = require("nano")("http://desouttter:Pb70e3c7@couchdb-desouttter.alwaysdata.net:5984");
+const test = nano.db.use("desouttter_hiker")
 
 const app = express()
 
