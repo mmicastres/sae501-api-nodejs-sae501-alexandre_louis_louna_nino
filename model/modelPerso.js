@@ -1,18 +1,6 @@
 const nano = require("nano")("http://lln4432a:Lel!ege2003!@localhost:5984");
 const dbPerso = nano.db.use('personnages');
 
-const Joi = require('joi')
-
-const persoSchema = Joi.object({
-    _id: Joi.string(),
-    _rev: Joi.string(),
-    id_perso: Joi.number().required(),
-    nom: Joi.string().required(),
-    img_preview: Joi.string().required(),
-    img_carte: Joi.string().required(),
-    deverouiller: Joi.boolean().required(),
-});
-module.exports = { persoSchema };
 
 const perso = async () => {
   const query = {
@@ -33,16 +21,13 @@ const afficherPerso = async (persoId) => {
   return perso.docs
 }
 
-const ajouterPerso = async (nouveauPerso) => {
-    const { value, error } = persoSchema.validate(nouveauPerso);
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      const response = await dbPerso.insert(nouveauPerso);
-      return { id: response.id };
-    }
-  };
+  const ajouterPerso =async(body)=>{
+    const perso = body
+    let newperso = await dbPerso.insert(perso)
+       console.log(newperso)
+       return newperso
 
+}
 
 module.exports = {
   perso,
