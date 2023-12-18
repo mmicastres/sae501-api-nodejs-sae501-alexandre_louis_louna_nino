@@ -11,11 +11,6 @@ const elements = async () => {
   return element.docs;
 };
 
-// const afficherElement = async (elementId) => {
-//   const element = await dbElements.get(elementId);
-//   return element;
-// };
-
 const afficherElement = async (elementId) => {
   const query = {
       "selector": { "id_element": parseInt(elementId) },
