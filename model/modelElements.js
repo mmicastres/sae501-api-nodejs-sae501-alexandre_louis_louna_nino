@@ -11,14 +11,18 @@ const elements = async () => {
   return element.docs;
 };
 
+// const afficherElement = async (elementId) => {
+//   const element = await dbElements.get(elementId);
+//   return element;
+// };
 
 const afficherElement = async (elementId) => {
   const query = {
       "selector": { "id_element": parseInt(elementId) },
       "fields": ["elementId", "titre", "img_fond", "img_icon"]
   }
-  let biblio = await dbElements.find(query)
-  return biblio.docs
+  let element = await dbElements.find(query)
+  return element.docs
 }
 
 module.exports = {
