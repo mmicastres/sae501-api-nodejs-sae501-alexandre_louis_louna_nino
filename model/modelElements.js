@@ -1,11 +1,22 @@
-const nano = require("nano")("http://desouttter:Pb70e3c7@couchdb-desouttter.alwaysdata.net:5984");
+const nano = require("nano")("http://lln4432a:Lel!ege2003!@localhost:5984");
 const dbElements = nano.db.use('elements');
 
-const afficherElement = async (elementId) => {
-    const element = await dbElements.get(elementId);
-    return element;
+const elements = async () => {
+  const query = {
+    selector: {},
+    fields: ["titre"],
   };
+  console.log(query)
+  let element = await dbElements.find(query);
+  return element.docs;
+};
 
-  module.exports = {
-    afficherElement
-  };
+const afficherElement = async (elementId) => {
+  const element = await dbElements.get(elementId);
+  return element;
+};
+
+module.exports = {
+  elements,
+  afficherElement
+};
