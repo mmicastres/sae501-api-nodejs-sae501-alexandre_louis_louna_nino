@@ -11,18 +11,13 @@ const elements = async () => {
   return element.docs;
 };
 
-const afficherElement = async (elementId) => {
-  const element = await dbElements.get(elementId);
-  return element;
-};
 
-const descriptionLivre = async (elementId) => {
+const afficherElement = async (elementId) => {
   const query = {
-      "selector": { "numero": parseInt(elementId) },
-      "fields": ["titre", "resume", "auteur"]
+      "selector": { "id_element": parseInt(elementId) },
+      "fields": ["elementId", "titre", "img_fond", "img_icon"]
   }
-  let biblio = await dbLivres.find(query)
-  console.log(biblio)
+  let biblio = await dbElements.find(query)
   return biblio.docs
 }
 
