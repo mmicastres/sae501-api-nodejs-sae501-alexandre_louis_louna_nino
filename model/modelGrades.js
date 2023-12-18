@@ -25,7 +25,15 @@ const detailgrade = async (idgrade) => {
     return grades.docs
 }
 
-module.exports = { listeGrade,detailgrade}
+const ajoutgrade=async(body)=>{
+    const grade = body
+    let newgrade = await dbGrades.insert(grade)
+       console.log(newgrade)
+       return newgrade
+    
+}
+
+module.exports = { listeGrade,detailgrade,ajoutgrade}
 
 // "Apprenti randonneur"
 //             in 5..9 -> "Randonneur occasionnel"
