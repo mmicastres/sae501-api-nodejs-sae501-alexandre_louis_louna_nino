@@ -1,6 +1,7 @@
 const modelPerso = require("../model/modelPerso.js");
 
 
+
 const perso = async (req, res) => {
     try {
         const Perso = await modelPerso.perso();
@@ -18,7 +19,19 @@ const afficherPerso = async (req, res) => {
     res.json(descriptionPerso)
 }
 
+const ajouterPerso = async (req, res) => {
+    const nouveauPerso = req.body;
+    try {
+        const response = await modelPerso.ajouterPerso(nouveauPerso);
+        res.json({ message: 'Personnage ajouté avec succès', id: response.id });
+    } catch (error) {
+        res.status(500).json({ erreur: error.message });
+    }
+};
+
+
 module.exports = {
     perso,
-    afficherPerso
+    afficherPerso,
+    ajouterPerso
 };
