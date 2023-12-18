@@ -16,6 +16,16 @@ const afficherElement = async (elementId) => {
   return element;
 };
 
+const descriptionLivre = async (elementId) => {
+  const query = {
+      "selector": { "numero": parseInt(elementId) },
+      "fields": ["titre", "resume", "auteur"]
+  }
+  let biblio = await dbLivres.find(query)
+  console.log(biblio)
+  return biblio.docs
+}
+
 module.exports = {
   elements,
   afficherElement
