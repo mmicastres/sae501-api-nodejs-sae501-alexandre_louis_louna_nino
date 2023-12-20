@@ -15,4 +15,15 @@ const listeUtilisateur = async () => {
 
 }
 
-module.exports = { listeUtilisateur}
+
+const descriptionUtilisateur = async (idUtils) => {
+    const query = {
+        "selector": { "id_util": parseInt(idUtils) },
+        "fields": ["pseudo", "mdp", "email","liste_perso"]
+    }
+    let utilisateur = await dbUtils.find(query)
+    console.log(utilisateur)
+    return utilisateur.docs
+}
+
+module.exports = { listeUtilisateur,descriptionUtilisateur}

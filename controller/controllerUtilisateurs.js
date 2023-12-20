@@ -8,4 +8,13 @@ const liste = async (req, res) => {
 }
 
 
-module.exports = { liste}
+const detailUtil = async (req, res) => {
+    const detailUtils = await modelUtils.descriptionUtilisateur(req.params.idutil)
+    if (detailUtils == 0) {
+        res.status(404).json({ "Erreur": "Le Utils n'existe pas" });
+    }
+    res.json(detailUtils)
+}
+
+
+module.exports = { liste,detailUtil}
