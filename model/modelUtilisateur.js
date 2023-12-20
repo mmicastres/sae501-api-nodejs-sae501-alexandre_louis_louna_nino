@@ -36,4 +36,13 @@ const listeUtilPerso = async (idUtils) => {
     return utilisateur.docs
 }
 
-module.exports = { listeUtilisateur,descriptionUtilisateur,listeUtilPerso}
+
+const ajoutUtil=async(body)=>{
+    const utilisateur = body
+    let newutil = await dbUtils.insert(utilisateur)
+       console.log(newutil)
+       return newutil
+    
+}
+
+module.exports = { listeUtilisateur,descriptionUtilisateur,listeUtilPerso,ajoutUtil}

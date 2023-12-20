@@ -9,4 +9,6 @@ routerUtilisateurs.get("/utilisateurs", controllerUtils.liste);
 
 routerUtilisateurs.get("/utilisateurs/:idutil/myperso",controllerUtils.detailPerso)
 
+routerUtilisateurs.post("/utilisateurs",controllerUtils.ajout)
+
 module.exports = { routerUtilisateurs}
