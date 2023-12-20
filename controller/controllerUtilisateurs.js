@@ -11,10 +11,19 @@ const liste = async (req, res) => {
 const detailUtil = async (req, res) => {
     const detailUtils = await modelUtils.descriptionUtilisateur(req.params.idutil)
     if (detailUtils == 0) {
-        res.status(404).json({ "Erreur": "Le Utils n'existe pas" });
+        res.status(404).json({ "Erreur": "L'utilisateur' n'existe pas" });
     }
     res.json(detailUtils)
 }
 
 
-module.exports = { liste,detailUtil}
+const detailPerso = async (req, res) => {
+    const detailUtils = await modelUtils.listeUtilPerso(req.params.idutil)
+    if (detailUtils == 0) {
+        res.status(404).json({ "Erreur": "L'utilisateur' n'existe pas" });
+    }
+    res.json(detailUtils)
+}
+
+
+module.exports = { liste,detailUtil,detailPerso}
