@@ -23,5 +23,17 @@ routerUtilisateurs.get("/utilisateurs/:idutil/myperso",controllerUtils.detailPer
 
 routerUtilisateurs.post("/utilisateurs",controllerUtils.ajout)
 
+
+const ElementsRouter = express.Router();
+
+
+
+const controllerElements = require("../controller/controllerElements.js");
+
+ElementsRouter.get("/elements", controllerElements.elements);
+ElementsRouter.get("/elements/:idElement", controllerElements.afficherElement);
+
+
 module.exports = { routerGrades}
 module.exports = { routerUtilisateurs}
+module.exports={ElementsRouter}

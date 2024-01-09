@@ -9,9 +9,9 @@ app.use(express.json())
 const route =require("./router/router.js");
 app.use(route.routerUtilisateurs)
 app.use(route.routerGrades)
+app.use(route.ElementsRouter)
 
 
-// Route de base
 app.get('/', function (req, res) {
   res.send('Hello World!')
 })
@@ -20,3 +20,4 @@ app.get('/', function (req, res) {
 app.listen(8080, () => {
   console.log("Server started");
 });
+
