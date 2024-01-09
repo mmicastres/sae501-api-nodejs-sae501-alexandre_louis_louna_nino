@@ -5,7 +5,7 @@ const controllerUtils = require("../controller/controllerUtilisateurs.js");
 
 routerUtilisateurs.get("/utilisateurs", controllerUtils.liste);
 
- routerUtilisateurs.get("/utilisateurs/:idutil",controllerUtils.detailUtil)
+routerUtilisateurs.get("/utilisateurs/:idutil",controllerUtils.detailUtil)
 
 routerUtilisateurs.get("/utilisateurs/:idutil/myperso",controllerUtils.detailPerso)
 
