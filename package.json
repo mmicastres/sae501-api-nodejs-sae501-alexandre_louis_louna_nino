@@ -2,7 +2,8 @@
   "dependencies": {
     "express": "^4.18.2",
     "joi": "^17.11.0",
-    "nano": "^10.1.3"
+    "nano": "^10.1.3",
+    "nodemon": "^3.0.2"
   },
   "name": "sae501-api-nodejs-sae501-alexandre_louis_louna_nino",
   "description": "[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=12830412&assignment_repo_type=AssignmentRepo)",
@@ -10,7 +11,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "author": "Hiker",
   "license": "ISC"

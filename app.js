@@ -8,6 +8,7 @@ const app = express()
 app.use(express.json())
 const route =require("./router/router.js");
 app.use(route.routerUtilisateurs)
+app.use(route.routerGrades)
 
 
 // Route de base
