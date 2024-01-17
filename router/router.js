@@ -19,7 +19,8 @@ routerUtilisateurs.get(
   "/utilisateurs/:idutil/myperso",
   controllerUtils.detailPerso,
 );
-routerUtilisateurs.post("/utilisateurs", controllerUtils.ajout);
+routerUtilisateurs.post("/inscription", controllerUtils.ajout);
+routerUtilisateurs.post("/connexion", controllerUtils.connexion);
 
 //les elements
 const controllerElements = require("../controller/controllerElements.js");
