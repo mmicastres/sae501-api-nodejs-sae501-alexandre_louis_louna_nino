@@ -10,9 +10,9 @@ const app = express();
 app.use(express.json());
 const route = require("./router/router.js");
 app.use(route.routerUtilisateurs);
-// app.use(route.routerGrades);
-//app.use(route.ElementsRouter);
-// app.use(route.PersoRouter)
+app.use(route.routerGrades);
+app.use(route.ElementsRouter);
+app.use(route.PersoRouter);
 
 app.get("/", function (req, res) {
   res.send("Hello Worlddddd!");

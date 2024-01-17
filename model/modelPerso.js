@@ -1,7 +1,7 @@
 const nano = require("nano")(
-  "http://desouttter:Pb70e3c7@couchdb-desouttter.alwaysdata.net:5984",
+  "http://desouttter_hiker:Pb70e3c7@couchdb-desouttter.alwaysdata.net:5984",
 );
-const dbPerso = nano.db.use("personnages");
+const dbPerso = nano.db.use("desouttter_hiker_personnages");
 
 const perso = async () => {
   const query = {

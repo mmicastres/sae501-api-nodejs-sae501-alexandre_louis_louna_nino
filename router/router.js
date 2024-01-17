@@ -1,4 +1,5 @@
 const express = require("express");
+
 const routerGrades = express.Router();
 const routerUtilisateurs = express.Router();
 const PersoRouter = express.Router();
@@ -14,20 +15,19 @@ routerGrades.post("/grades", controllerGrade.ajout);
 const controllerUtils = require("../controller/controllerUtilisateurs.js");
 routerUtilisateurs.get("/utilisateurs", controllerUtils.liste);
 routerUtilisateurs.get("/utilisateurs/:idutil", controllerUtils.detailUtil);
-
 routerUtilisateurs.get(
   "/utilisateurs/:idutil/myperso",
   controllerUtils.detailPerso,
 );
 routerUtilisateurs.post("/utilisateurs", controllerUtils.ajout);
 
+//les elements
 const controllerElements = require("../controller/controllerElements.js");
-
 ElementsRouter.get("/elements", controllerElements.elements);
 ElementsRouter.get("/elements/:idElement", controllerElements.afficherElement);
 
+//les personnages
 const controllerPerso = require("../controller/controllerPerso.js");
-
 PersoRouter.get("/personnages", controllerPerso.perso);
 PersoRouter.get("/personnages/:idPerso", controllerPerso.afficherPerso);
 PersoRouter.post("/personnages", controllerPerso.ajouterPerso);
