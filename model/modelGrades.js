@@ -4,6 +4,7 @@ const nano = require("nano")(
 // choix d’une base de données
 let dbGrades = nano.db.use("desouttter_hiker_grades");
 
+// liste de tous les grades
 const listeGrade = async () => {
   const query = {
     selector: {},
@@ -14,6 +15,7 @@ const listeGrade = async () => {
   return grades.docs;
 };
 
+// detail d'un grade
 const detailgrade = async (idgrade) => {
   query = {
     selector: { id_grade: parseInt(idgrade) },
@@ -24,6 +26,7 @@ const detailgrade = async (idgrade) => {
   return grades.docs;
 };
 
+// ajout d'un grade
 const ajoutgrade = async (body) => {
   const grade = body;
   let newgrade = await dbGrades.insert(grade);

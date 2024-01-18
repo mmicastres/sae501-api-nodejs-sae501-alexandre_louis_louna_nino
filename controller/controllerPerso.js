@@ -1,4 +1,5 @@
 const modelPerso = require("../model/modelPerso.js");
+let jwt = require("jsonwebtoken");
 
 const Joi = require("joi");
 
@@ -11,8 +12,31 @@ const persoSchema = Joi.object({
   img_carte: Joi.string().required(),
 });
 
+function verifJTW(req, res, next) {
+  let token = req.body.token || req.query.token;
+  if (token) {
+    jwt.verify(token, "clesecrete", function (err, payload) {
+      if (err) {
+        return res.json({
+          satus: false,
+          message: "token incorrect : " + err.message,
+        });
+      } else {
+        req.payload = payload;
+        next();
+      }
+    });
+  } else {
+    return res.status(403).send({
+      status: false,
+      message: "token absent",
+    });
+  }
+}
+
 module.exports = { persoSchema };
 
+//liste de tous les personnages
 const perso = async (req, res) => {
   try {
     const Perso = await modelPerso.perso();
@@ -22,6 +46,7 @@ const perso = async (req, res) => {
   }
 };
 
+//detail d'un personnage
 const afficherPerso = async (req, res) => {
   const descriptionPerso = await modelPerso.afficherPerso(req.params.idPerso);
   if (descriptionPerso == 0) {
@@ -30,6 +55,7 @@ const afficherPerso = async (req, res) => {
   res.json(descriptionPerso);
 };
 
+//ajout d'un personnage
 const ajouterPerso = async (req, res) => {
   const ajouterPerso = await modelPerso.ajouterPerso(req.body);
   const perso = req.body;
@@ -43,6 +69,7 @@ const ajouterPerso = async (req, res) => {
   }
 };
 
+//modification d'un personnage
 const modifierPerso = async (req, res) => {
   const modifierPerso = await modelPerso.modifierPerso(req.body);
   const perso = req.body;
@@ -56,6 +83,7 @@ const modifierPerso = async (req, res) => {
   }
 };
 
+//suppression d'un personnage
 const supprimerPerso = async (req, res) => {
   try {
     await modelPerso.supprimerPerso(req.params.idPerso);
@@ -71,4 +99,5 @@ module.exports = {
   ajouterPerso,
   modifierPerso,
   supprimerPerso,
+  verifJTW,
 };

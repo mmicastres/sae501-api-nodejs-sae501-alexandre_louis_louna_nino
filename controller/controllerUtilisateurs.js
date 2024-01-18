@@ -1,6 +1,9 @@
 const modelUtils = require("../model/modelUtilisateur.js");
-
+let jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 const Joi = require("joi");
+
 const schema = Joi.object({
   _id: Joi.string(),
   _rev: Joi.string(),
@@ -10,7 +13,7 @@ const schema = Joi.object({
     .required(),
   mdp: Joi.string().max(30).required(),
   email: Joi.string().email().max(30).required(),
-  id_util: Joi.number().integer().min(1).required(),
+  id_util: Joi.number().integer().min(1),
   liste_perso: Joi.array().items(Joi.number()),
   exp: Joi.number().integer(),
   nbr_km_total: Joi.number().integer(),
@@ -18,12 +21,87 @@ const schema = Joi.object({
   duel_gagne: Joi.number().integer(),
 });
 
+const schemaco = Joi.object({
+  mdp: Joi.string().max(30).required(),
+  email: Joi.string().email().max(30).required(),
+  id_util: Joi.number().integer().min(1),
+});
+
+function verifJTW(req, res, next) {
+  let token = req.body.token || req.query.token;
+  if (token) {
+    jwt.verify(token, "clesecrete", function (err, payload) {
+      if (err) {
+        return res.json({
+          satus: false,
+          message: "token incorrect : " + err.message,
+        });
+      } else {
+        req.payload = payload;
+        next();
+      }
+    });
+  } else {
+    return res.status(403).send({
+      status: false,
+      message: "token absent",
+    });
+  }
+}
+
+// Créer un token
+const getToken = async (req, res) => {
+  const payload = {
+    username: "utilisateur",
+  };
+
+  const secretKey = "clesecrete";
+
+  const token = jwt.sign(payload, secretKey, { expiresIn: "100h" }); // Vous pouvez ajuster la durée de
+  return token;
+};
+// Le nombre de "salts" à générer
+
+// Fonction pour hacher le mot de passe
+const hashPassword = async (password) => {
+  try {
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(password, salt);
+    return hash;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Fonction pour vérifier le mot de passe
+const checkPassword = async (plainPassword, hashedPassword) => {
+  try {
+    const match = await bcrypt.compare(plainPassword, hashedPassword);
+    return match;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// const isMatch = await checkPassword(
+//   "motdepasse123",
+//   hashedPasswordFromDatabase,
+// );
+
+// if (isMatch) {
+//   console.log("Mot de passe correct");
+// } else {
+//   console.log("Mot de passe incorrect");
+// }
+
+//liste de tous les utilisateurs
 const liste = async (req, res) => {
   const listeUtils = await modelUtils.listeUtilisateur();
   console.log(listeUtils);
   res.json(listeUtils);
 };
 
+//details d'un utilisateur
 const detailUtil = async (req, res) => {
   const detailUtils = await modelUtils.descriptionUtilisateur(
     req.params.idutil,
@@ -34,6 +112,7 @@ const detailUtil = async (req, res) => {
   res.json(detailUtils);
 };
 
+//renvoie la liste des personnages que l'utilisateur posséde
 const detailPerso = async (req, res) => {
   const detailUtils = await modelUtils.listeUtilPerso(req.params.idutil);
   if (detailUtils == 0) {
@@ -42,17 +121,104 @@ const detailPerso = async (req, res) => {
   res.json(detailUtils);
 };
 
+//ajout d'un utilisateur
 const ajout = async (req, res) => {
   const utilisateur = req.body;
   const { value, error } = schema.validate(utilisateur);
+  const idMax = await modelUtils.maxId();
+
   if (error == undefined) {
-    const ajoutUtil = await modelUtils.ajoutUtil(req.body);
-    console.log(ajoutUtil);
-    res.send(" Ajout de l'utilisateur : " + utilisateur.pseudo);
+    // Vérifier si le pseudo existe déjà
+    const pseudoExists = await modelUtils.checkPseudoExists(utilisateur.pseudo);
+    if (pseudoExists) {
+      return res.status(409).json({ Erreur: "Le pseudo est déjà pris" });
+    }
+
+    // Vérifier si l'email existe déjà
+    const emailExists = await modelUtils.checkEmailExists(utilisateur.email);
+    if (emailExists) {
+      return res.status(409).json({ Erreur: "L'email est déjà pris" });
+    }
+
+    // Si le pseudo et l'email sont uniques, procéder à l'ajout
+    const cryptedMdp = await hashPassword(utilisateur.mdp);
+    const modifUtilisateur = {
+      ...utilisateur,
+      id_util: idMax + 1,
+      mdp: cryptedMdp,
+    };
+
+    const ajoutUtil = await modelUtils.ajoutUtil(modifUtilisateur);
+    res.json({ message: "Ajout de l'utilisateur" });
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
   }
 };
 
-module.exports = { liste, detailUtil, detailPerso, ajout };
+const supprimerUtil = async (req, res) => {
+  try {
+    await modelUtils.supprimerUtil(req.params.idutil);
+    res.send("Suppression du personnage avec l'id_util " + req.params.idutil);
+  } catch (error) {
+    res.status(500).json({ erreur: error.message });
+  }
+};
+
+//connexion
+const connexion = async (req, res) => {
+  const { email, mdp } = req.body;
+
+  try {
+    // Vérifier si l'utilisateur existe dans la base de données
+    const utilisateur = await modelUtils.connexionUtil(email);
+    const isMatch = await checkPassword(mdp, utilisateur.mdp);
+    console.log(isMatch);
+    // console.log(utilisateur.mdp);
+
+    if (!utilisateur || !isMatch) {
+      return res
+        .status(401)
+        .json({ erreur: "Email ou mot de passe incorrect" });
+    }
+
+    // res.json({ message: "Connexion réussie", utilisateur });
+    const token = await getToken();
+    res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erreur: "Erreur lors de la connexion" });
+  }
+};
+
+//modification d'un utilisateur
+const modifierUtil = async (req, res) => {
+  const utilisateur = req.body;
+  const { value, error } = schemaco.validate(utilisateur);
+  if (error == undefined) {
+    if (utilisateur.mdp != "") {
+      const cryptedMdp = await hashPassword(utilisateur.mdp);
+      const modifUtil = {
+        ...utilisateur,
+        mdp: cryptedMdp,
+      };
+      const modifierUtil = await modelUtils.modifierUtilisateur(modifUtil);
+      // console.log(modifierUtil);
+    }
+    res.send("Modification du l'utilisateur " + utilisateur.pseudo);
+  } else {
+    console.log(error);
+    res.status(406).json({ Erreur: error.details });
+  }
+};
+
+module.exports = {
+  liste,
+  detailUtil,
+  detailPerso,
+  ajout,
+  supprimerUtil,
+  connexion,
+  verifJTW,
+  modifierUtil,
+};

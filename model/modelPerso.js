@@ -3,6 +3,7 @@ const nano = require("nano")(
 );
 const dbPerso = nano.db.use("desouttter_hiker_personnages");
 
+// liste de tous les personnages
 const perso = async () => {
   const query = {
     selector: {},
@@ -13,6 +14,7 @@ const perso = async () => {
   return perso.docs;
 };
 
+//details d'un personnage
 const afficherPerso = async (persoId) => {
   const query = {
     selector: { id_perso: parseInt(persoId) },
@@ -22,6 +24,7 @@ const afficherPerso = async (persoId) => {
   return perso.docs;
 };
 
+//ajout d'un personnage
 const ajouterPerso = async (body) => {
   const perso = body;
   let newperso = await dbPerso.insert(perso);
@@ -29,6 +32,7 @@ const ajouterPerso = async (body) => {
   return newperso;
 };
 
+//modification d'un personnage
 const modifierPerso = async (body) => {
   const perso = body;
   try {
@@ -41,6 +45,7 @@ const modifierPerso = async (body) => {
   }
 };
 
+//suppression d'un personnage
 const supprimerPerso = async (id_perso) => {
   const query = {
     selector: {
