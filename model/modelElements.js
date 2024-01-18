@@ -3,6 +3,7 @@ const nano = require("nano")(
 );
 const dbElements = nano.db.use("desouttter_hiker_elements");
 
+//liste de tous les elements
 const elements = async () => {
   const query = {
     selector: {},
@@ -13,6 +14,7 @@ const elements = async () => {
   return element.docs;
 };
 
+//details d'un element
 const afficherElement = async (elementId) => {
   const query = {
     selector: { id_element: parseInt(elementId) },

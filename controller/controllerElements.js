@@ -1,5 +1,29 @@
 const modelElement = require("../model/modelElements.js");
+let jwt = require("jsonwebtoken");
 
+function verifJTW(req, res, next) {
+  let token = req.body.token || req.query.token;
+  if (token) {
+    jwt.verify(token, "clesecrete", function (err, payload) {
+      if (err) {
+        return res.json({
+          satus: false,
+          message: "token incorrect : " + err.message,
+        });
+      } else {
+        req.payload = payload;
+        next();
+      }
+    });
+  } else {
+    return res.status(403).send({
+      status: false,
+      message: "token absent",
+    });
+  }
+}
+
+//liste de tous les elements
 const elements = async (req, res) => {
   try {
     const Elements = await modelElement.elements();
@@ -9,6 +33,7 @@ const elements = async (req, res) => {
   }
 };
 
+//details d'un element
 const afficherElement = async (req, res) => {
   const descriptionElement = await modelElement.afficherElement(
     req.params.idElement,
@@ -22,4 +47,5 @@ const afficherElement = async (req, res) => {
 module.exports = {
   elements,
   afficherElement,
+  verifJTW,
 };
