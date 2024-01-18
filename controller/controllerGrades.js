@@ -62,4 +62,17 @@ const ajout = async (req, res) => {
   }
 };
 
-module.exports = { liste, detail, ajout, verifJTW };
+const modifierGrade = async (req, res) => {
+  const modifierGrade = await modelGrades.modifierGrade(req.body);
+  const grade = req.body;
+  const { value, error } = schema.validate(grade);
+  if (error == undefined) {
+    console.log(modifierGrade);
+    res.send("Modification du grade " + grade.titre);
+  } else {
+    console.log(error);
+    res.status(406).json({ Erreur: error.details });
+  }
+};
+
+module.exports = { liste, detail, ajout, verifJTW, modifierGrade };

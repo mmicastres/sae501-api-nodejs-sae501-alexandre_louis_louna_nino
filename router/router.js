@@ -14,6 +14,11 @@ routerGrades.get(
   controllerGrade.detail,
 );
 routerGrades.post("/grades", controllerGrade.verifJTW, controllerGrade.ajout);
+routerGrades.put(
+  "/grades",
+  controllerGrade.verifJTW,
+  controllerGrade.modifierGrade,
+);
 
 // Les utilisateurs
 const controllerUtils = require("../controller/controllerUtilisateurs.js");

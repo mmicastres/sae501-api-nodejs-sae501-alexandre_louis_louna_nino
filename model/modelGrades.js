@@ -34,7 +34,19 @@ const ajoutgrade = async (body) => {
   return newgrade;
 };
 
-module.exports = { listeGrade, detailgrade, ajoutgrade };
+const modifierGrade = async (body) => {
+  const perso = body;
+  try {
+    let newperso = await dbGrades.insert(perso);
+    console.log(newperso);
+    return newperso;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Erreur lors de la modification du grade");
+  }
+};
+
+module.exports = { listeGrade, detailgrade, ajoutgrade, modifierGrade };
 
 // "Apprenti randonneur"
 //             in 5..9 -> "Randonneur occasionnel"
