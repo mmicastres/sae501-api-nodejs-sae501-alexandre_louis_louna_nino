@@ -32,7 +32,6 @@ routerUtilisateurs.get(
   controllerUtils.verifJTW,
   controllerUtils.detailPerso,
 );
-
 routerUtilisateurs.put(
   "/utilisateurs",
   controllerUtils.verifJTW,
@@ -43,9 +42,23 @@ routerUtilisateurs.delete(
   controllerUtils.verifJTW,
   controllerUtils.supprimerUtil,
 );
-
+// routerUtilisateurs.put(
+//   "/utilisateurs/:idutil/myperso",
+//   controllerUtils.verifJTW,
+//   controllerUtils.modifierPerso,
+// );
+routerUtilisateurs.put(
+  "/utilisateurs/:idutil/kilometres",
+  controllerUtils.verifJTW,
+  controllerUtils.modifkilometres,
+);
 routerUtilisateurs.post("/inscription", controllerUtils.ajout);
 routerUtilisateurs.post("/connexion", controllerUtils.connexion);
+routerUtilisateurs.put(
+  "/utilisateurs/:idutil/victoire",
+  controllerUtils.verifJTW,
+  controllerUtils.incrementerDuels,
+);
 
 // //les elements
 const controllerElements = require("../controller/controllerElements.js");

@@ -7,10 +7,7 @@ const Joi = require("joi");
 const schema = Joi.object({
   _id: Joi.string(),
   _rev: Joi.string(),
-  pseudo: Joi.string()
-
-    .max(30)
-    .required(),
+  pseudo: Joi.string().max(30).required(),
   mdp: Joi.string().max(30).required(),
   email: Joi.string().email().max(30).required(),
   id_util: Joi.number().integer().min(1),
@@ -23,8 +20,14 @@ const schema = Joi.object({
 
 const schemaco = Joi.object({
   mdp: Joi.string().max(30).required(),
-  email: Joi.string().email().max(30).required(),
+  email: Joi.string().email().max(30),
+  pseudo: Joi.string().max(30),
   id_util: Joi.number().integer().min(1),
+});
+
+const schemakilometre_total = Joi.object({
+  nbr_km_total: Joi.number().integer(),
+  nbr_km_today: Joi.number().integer(),
 });
 
 function verifJTW(req, res, next) {
@@ -167,11 +170,11 @@ const supprimerUtil = async (req, res) => {
 
 //connexion
 const connexion = async (req, res) => {
-  const { email, mdp } = req.body;
+  const { email, pseudo, mdp } = req.body;
 
   try {
     // Vérifier si l'utilisateur existe dans la base de données
-    const utilisateur = await modelUtils.connexionUtil(email);
+    const utilisateur = await modelUtils.connexionUtil(email || pseudo);
     const isMatch = await checkPassword(mdp, utilisateur.mdp);
     console.log(isMatch);
     // console.log(utilisateur.mdp);
@@ -212,6 +215,42 @@ const modifierUtil = async (req, res) => {
   }
 };
 
+// victoire Duel
+const incrementerDuels = async (req, res) => {
+  const id_util = req.params.idutil;
+  // console.log(id_util);
+  try {
+    await modelUtils.incrementerDuelsGagnes(id_util);
+    const personnageAleatoire =
+      await modelUtils.recevoirPersonnageAleatoire(id_util);
+    res.json({
+      message: "Victoire dans le duel!",
+      personnageAleatoire: personnageAleatoire,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ erreur: "Erreur lors de l'incrémentation des duels gagnés" });
+  }
+};
+
+//kilometres
+const modifkilometres = async (req, res) => {
+  const kilometres = req.body;
+  const id_util = req.params.idutil;
+  const { value, error } = schemakilometre_total.validate(kilometres);
+  if (error == undefined) {
+    const modifierUtil = await modelUtils.modifkilo(id_util, kilometres);
+    console.log(modifierUtil);
+
+    res.send("Kilometre :" + kilometres.nbr_km_total);
+  } else {
+    console.log(error);
+    res.status(406).json({ Erreur: error.details });
+  }
+};
+
 module.exports = {
   liste,
   detailUtil,
@@ -221,4 +260,6 @@ module.exports = {
   connexion,
   verifJTW,
   modifierUtil,
+  modifkilometres,
+  incrementerDuels,
 };
