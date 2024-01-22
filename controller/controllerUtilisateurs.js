@@ -154,7 +154,7 @@ const ajout = async (req, res) => {
     };
 
     const ajoutUtil = await modelUtils.ajoutUtil(modifUtilisateur);
-    res.json({ message: "Ajout de l'utilisateur" });
+    res.json({ success: true , message: "Ajout de l'utilisateur" });
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
