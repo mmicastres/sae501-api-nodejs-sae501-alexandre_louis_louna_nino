@@ -53,14 +53,16 @@ function verifJTW(req, res, next) {
 }
 
 // Créer un token
-const getToken = async (req, res) => {
+const getToken = async (id_util) => {
   const payload = {
     username: "utilisateur",
+    id_util: id_util,
   };
 
   const secretKey = "clesecrete";
 
-  const token = jwt.sign(payload, secretKey, { expiresIn: "100h" }); // Vous pouvez ajuster la durée de
+  const token = jwt.sign(payload, secretKey, { expiresIn: "100h" });
+
   return token;
 };
 // Le nombre de "salts" à générer
@@ -177,7 +179,6 @@ const connexion = async (req, res) => {
     const utilisateur = await modelUtils.connexionUtil(email || pseudo);
     const isMatch = await checkPassword(mdp, utilisateur.mdp);
     console.log(isMatch);
-    // console.log(utilisateur.mdp);
 
     if (!utilisateur || !isMatch) {
       return res
@@ -185,15 +186,15 @@ const connexion = async (req, res) => {
         .json({ erreur: "Email ou mot de passe incorrect" });
     }
 
-    // res.json({ message: "Connexion réussie", utilisateur });
-    const token = await getToken();
-    res.json({ token });
+    // Générer un jeton avec id_util
+    const token = await getToken(utilisateur.id_util);
+
+    res.json({ token, id_util: utilisateur.id_util });
   } catch (error) {
     console.error(error);
     res.status(500).json({ erreur: "Erreur lors de la connexion" });
   }
 };
-
 //modification d'un utilisateur
 const modifierUtil = async (req, res) => {
   const utilisateur = req.body;
