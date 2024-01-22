@@ -86,7 +86,7 @@ const maxId = async () => {
 const connexionUtil = async (login) => {
   const query = {
     selector: { $or: [{ email: login }, { pseudo: login }] },
-    fields: ["pseudo", "mdp", "email", "liste_perso"],
+    fields: ["pseudo", "mdp", "email", "liste_perso", "id_util"],
   };
 
   try {
