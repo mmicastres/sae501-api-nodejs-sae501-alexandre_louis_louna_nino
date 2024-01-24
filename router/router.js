@@ -7,7 +7,7 @@ const ElementsRouter = express.Router();
 const DuelRouter = express.Router();
 
 // les duels
-const controllerDuel = require("../controller/contrellerDuel.js");
+const controllerDuel = require("../controller/controllerDuel.js");
 DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
 
 // Les grades
