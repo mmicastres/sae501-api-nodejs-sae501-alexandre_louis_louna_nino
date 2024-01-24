@@ -11,7 +11,7 @@ const perso = async () => {
   };
   console.log(query);
   let perso = await dbPerso.find(query);
-  return perso.docs[0];
+  return perso.docs;
 };
 
 //details d'un personnage
