@@ -23,7 +23,7 @@ const detailgrade = async (idgrade) => {
   };
   let grades = await dbGrades.find(query);
   console.log(grades);
-  return grades.docs;
+  return grades.docs[0];
 };
 
 // ajout d'un grade
