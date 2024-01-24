@@ -29,7 +29,7 @@ const descriptionUtilisateur = async (idUtils) => {
   };
   let utilisateur = await dbUtils.find(query);
   console.log(utilisateur);
-  return utilisateur.docs;
+  return utilisateur.docs[0];
 };
 
 //liste des personnages
@@ -40,7 +40,7 @@ const listeUtilPerso = async (idUtils) => {
   };
   let utilisateur = await dbUtils.find(query);
   console.log(utilisateur);
-  return utilisateur.docs;
+  return utilisateur.docs[0];
 };
 
 //ajout d'un utilisateur

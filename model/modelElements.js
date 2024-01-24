@@ -21,7 +21,7 @@ const afficherElement = async (elementId) => {
     fields: ["elementId", "titre", "img_fond", "img_icon"],
   };
   let element = await dbElements.find(query);
-  return element.docs;
+  return element.docs[0];
 };
 
 module.exports = {

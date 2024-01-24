@@ -4,6 +4,11 @@ const routerGrades = express.Router();
 const routerUtilisateurs = express.Router();
 const PersoRouter = express.Router();
 const ElementsRouter = express.Router();
+const DuelRouter = express.Router();
+
+// les duels
+const controllerDuel = require("../controller/controllerDuel.js");
+DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
 
 
 // Les grades
