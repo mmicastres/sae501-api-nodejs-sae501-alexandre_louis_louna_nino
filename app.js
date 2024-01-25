@@ -12,6 +12,6 @@ app.get("/", function (req, res) {
   res.send("Hello Worlddddd2!");
 });
 
-app.listen(8080, () => {
+app.listen(process.env.ENV, () => {
   console.log("Server started");
 });
