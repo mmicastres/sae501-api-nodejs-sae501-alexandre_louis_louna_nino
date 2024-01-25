@@ -113,6 +113,11 @@ PersoRouter.delete(
 
 // les duels
 const controllerDuel = require("../controller/controllerDuel.js");
+DuelRouter.get(
+  "/duel/responses",
+  controllerDuel.verifJTW,
+  controllerDuel.response,
+);
 DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
 DuelRouter.get("/duels", controllerDuel.verifJTW, controllerDuel.getDuels);
 DuelRouter.put("/duels", controllerDuel.verifJTW, controllerDuel.updateDuel);

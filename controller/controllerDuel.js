@@ -1,4 +1,5 @@
 const modelDuel = require("../model/modelDuel.js");
+const modelUtilisateur = require("../model/modelUtilisateur.js");
 let jwt = require("jsonwebtoken");
 
 const Joi = require("joi");
@@ -52,7 +53,35 @@ const getDuels = async (req, res) => {
   res.send(duels);
 };
 
-const response = async (req, res) => {};
+const response = async (req, res) => {
+  const currentUserId = req.query.currentUserId;
+  const currentX = req.query.currentX;
+  const currentY = req.query.currentY;
+
+  try {
+    const utilisateursProximite =
+      await modelUtilisateur.rechercherUtilisateursProximite(
+        currentUserId,
+        currentX,
+        currentY,
+      );
+    const utilisateur1Duel = utilisateursProximite[0].want_duel;
+    const utilisateur2Duel = utilisateursProximite[1].want_duel;
+    console.log("utilisateur1Duel", utilisateur1Duel);
+    console.log("utilisateur2Duel", utilisateur2Duel);
+    if (utilisateur1Duel === utilisateur2Duel) {
+      res.status(200).json({ message: "True" });
+    } else {
+      res.status(200).json({ message: "Undes utilisateur a répondu False" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message:
+        "Une erreur est survenue lors de la comparaison des utilisateurs.",
+    });
+  }
+};
 
 const updateDuel = async (req, res) => {
   // const duel = await modelDuel.getDuel();
@@ -70,4 +99,4 @@ const updateDuel = async (req, res) => {
   // }
 };
 
-module.exports = { verifJTW, duel, updateDuel, getDuels };
+module.exports = { verifJTW, duel, updateDuel, getDuels, response };

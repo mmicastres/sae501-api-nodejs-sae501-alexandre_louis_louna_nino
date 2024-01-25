@@ -12,7 +12,7 @@ const ajoutDuel = async (body) => {
   return newduel;
 };
 
-const responseDuel = async () => {};
+// const compareReponse = async () => {};
 
 const getDuels = async () => {
   const query = {
