@@ -154,7 +154,7 @@ const ajout = async (req, res) => {
     };
 
     const ajoutUtil = await modelUtils.ajoutUtil(modifUtilisateur);
-    res.json({ success: true , message: "Ajout de l'utilisateur" });
+    res.json({ success: true, message: "Ajout de l'utilisateur" });
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
@@ -219,7 +219,6 @@ const modifierUtil = async (req, res) => {
 // victoire Duel
 const incrementerDuels = async (req, res) => {
   const id_util = req.params.idutil;
-  // console.log(id_util);
   try {
     await modelUtils.incrementerDuelsGagnes(id_util);
     const personnageAleatoire =

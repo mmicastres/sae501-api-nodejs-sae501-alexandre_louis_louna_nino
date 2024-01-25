@@ -217,7 +217,7 @@ const modifkilo = async (id_util, body) => {
 
 // ajoute +1 au nombre de duels gagnés
 const incrementerDuelsGagnes = async (id_util) => {
-  // console.log("id_util", id_util);
+  console.log("id_util", id_util);
   try {
     const query = {
       selector: { id_util: parseInt(id_util) },
@@ -225,7 +225,7 @@ const incrementerDuelsGagnes = async (id_util) => {
     };
 
     const result = await dbUtils.find(query);
-    // console.log(result);
+    //console.log(result);
 
     if (result.docs.length > 0) {
       const utilisateur = result.docs[0];
@@ -255,6 +255,7 @@ const recevoirPersonnageAleatoire = async (id_util) => {
 
     const personnagesDisponibles = [];
     const allPerso = await modelPerso.perso();
+    console.log(allPerso);
 
     allPerso.map((perso) => {
       personnagesDisponibles.push(perso.id_perso);
