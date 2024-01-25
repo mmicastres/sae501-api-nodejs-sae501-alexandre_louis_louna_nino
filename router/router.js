@@ -6,10 +6,6 @@ const PersoRouter = express.Router();
 const ElementsRouter = express.Router();
 const DuelRouter = express.Router();
 
-// les duels
-const controllerDuel = require("../controller/controllerDuel.js");
-DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
-
 // Les grades
 const controllerGrade = require("../controller/controllerGrades.js");
 routerGrades.get("/grades", controllerGrade.verifJTW, controllerGrade.liste);
@@ -68,6 +64,11 @@ routerUtilisateurs.get(
   "/utilisateurs/:idutil/proximite",
   controllerUtils.detecterUtilisateursProximite,
 );
+routerUtilisateurs.put(
+  "/utilisateurs/:idutil/duel",
+  controllerUtils.verifJTW,
+  controllerUtils.modifierStatutDuel,
+);
 
 // //les elements
 const controllerElements = require("../controller/controllerElements.js");
@@ -110,9 +111,17 @@ PersoRouter.delete(
   controllerPerso.supprimerPerso,
 );
 
+// les duels
+const controllerDuel = require("../controller/controllerDuel.js");
+DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
+DuelRouter.get("/duels", controllerDuel.verifJTW, controllerDuel.getDuels);
+DuelRouter.put("/duels", controllerDuel.verifJTW, controllerDuel.updateDuel);
+// DuelRouter.post("/duel/:idutil1/:idutil2", duelController.gererPropositionEtDuel);
+
 module.exports = {
   routerGrades,
   routerUtilisateurs,
   PersoRouter,
   ElementsRouter,
+  DuelRouter,
 };

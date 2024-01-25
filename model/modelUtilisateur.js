@@ -55,6 +55,7 @@ const ajoutUtil = async (body) => {
       x: 0,
       y: 0,
     },
+    want_duel: false,
   };
   const utilisateur = { ...defaultValues, ...body };
   let newutil = await dbUtils.insert(utilisateur);
@@ -188,7 +189,7 @@ const modifierUtilisateur = async (body) => {
 const modifkilo = async (id_util, body) => {
   const kilo = body;
   console.log(kilo);
-  let modifUser = { ...kilo }; // Change const to let
+  let modifUser = { ...kilo };
   const query = {
     selector: { id_util: parseInt(id_util) },
     fields: [],
@@ -298,7 +299,6 @@ const recevoirPersonnageAleatoire = async (id_util) => {
     throw new Error("Erreur lors de la réception d'un personnage aléatoire");
   }
 };
-
 // Fonction pour rechercher les utilisateurs à proximité dans la base de données
 const rechercherUtilisateursProximite = async (
   currentUserId,
@@ -322,6 +322,7 @@ const rechercherUtilisateursProximite = async (
             id_util: utilisateur.id_util,
             pseudo: utilisateur.pseudo,
             distance: distance,
+            want_duel: utilisateur.want_duel,
           });
         }
       }
@@ -333,7 +334,6 @@ const rechercherUtilisateursProximite = async (
     throw new Error("Erreur lors de la recherche des utilisateurs à proximité");
   }
 };
-
 // Fonction pour calculer la distance haversine entre deux points géographiques
 function calculerDistanceHaversine(lat1, lon1, lat2, lon2) {
   const deg2rad = (deg) => deg * (Math.PI / 180);
@@ -356,6 +356,40 @@ function calculerDistanceHaversine(lat1, lon1, lat2, lon2) {
   return distance;
 }
 
+// Modification du statut want_duel
+const modifierStatutDuel = async (id_util, want_duel) => {
+  const query = {
+    selector: { id_util: parseInt(id_util) },
+    fields: [],
+  };
+
+  try {
+    const result = await dbUtils.find(query);
+    console.log(result);
+    if (result.docs.length > 0) {
+      const utilisateur = {
+        ...want_duel,
+        _id: result.docs[0]._id,
+        _rev: result.docs[0]._rev,
+        id_util: result.docs[0].id_util,
+        duel_gagne: result.docs[0].duel_gagne,
+        exp: result.docs[0].exp,
+        liste_perso: result.docs[0].liste_perso,
+        pseudo: result.docs[0].pseudo,
+        mdp: result.docs[0].mdp,
+        email: result.docs[0].email,
+      };
+
+      await dbUtils.insert(utilisateur);
+    } else {
+      throw new Error("Utilisateur non trouvé");
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Erreur lors de la modification du statut want_duel");
+  }
+};
+
 module.exports = {
   listeUtilisateur,
   descriptionUtilisateur,
@@ -371,4 +405,5 @@ module.exports = {
   incrementerDuelsGagnes,
   recevoirPersonnageAleatoire,
   rechercherUtilisateursProximite,
+  modifierStatutDuel,
 };
