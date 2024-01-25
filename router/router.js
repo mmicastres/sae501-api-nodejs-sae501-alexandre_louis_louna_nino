@@ -113,9 +113,10 @@ PersoRouter.delete(
 
 // les duels
 const controllerDuel = require("../controller/controllerDuel.js");
-DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
+DuelRouter.post("/duels", controllerDuel.verifJTW, controllerDuel.duel);
 DuelRouter.get("/duels", controllerDuel.verifJTW, controllerDuel.getDuels);
 DuelRouter.put("/duels", controllerDuel.verifJTW, controllerDuel.updateDuel);
+DuelRouter.delete("/duels/:idDuel", controllerDuel.verifJTW, controllerDuel.deleteDuel);
 // DuelRouter.post("/duel/:idutil1/:idutil2", duelController.gererPropositionEtDuel);
 
 module.exports = {

@@ -9,7 +9,7 @@ const schema = Joi.object({
       id_joueur: Joi.number().integer().min(1).required(),
       id_element: Joi.number().integer().min(1).required().allow(null),
     }),
-  ),
+  ).required(),
   gagnant: Joi.number().integer().min(1).required().allow(null),
 });
 
@@ -36,11 +36,15 @@ function verifJTW(req, res, next) {
 }
 
 const duel = async (req, res) => {
-  const duel = await modelDuel.ajoutDuel(req.body);
-  const { value, error } = schema.validate(req.body);
+
+  const maxId = await modelDuel.maxId();
+  const duelBody = { ...req.body, id_duel: maxId + 1 }
+  // console.log(duelBody);
+  const { value, error } = schema.validate(duelBody);
   if (error == undefined) {
+    const duel = await modelDuel.ajoutDuel(duelBody);
     console.log(duel);
-    res.send(" Duel " + req.body.id_duel);
+    res.json({ success: true, message: "Ajout de l'utilisateur " });
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
@@ -52,7 +56,7 @@ const getDuels = async (req, res) => {
   res.send(duels);
 };
 
-const response = async (req, res) => {};
+const response = async (req, res) => { };
 
 const updateDuel = async (req, res) => {
   // const duel = await modelDuel.getDuel();
@@ -70,4 +74,18 @@ const updateDuel = async (req, res) => {
   // }
 };
 
-module.exports = { verifJTW, duel, updateDuel, getDuels };
+// Suppresion d'un duel
+const deleteDuel = async (req, res) => {
+  try {
+    await modelDuel.deleteDuel(req.params.idDuel);
+    res.json({
+      success: true,
+      message: "Suppression du duel n° " + req.params.idDuel,
+    });
+  } catch (error) {
+    res.status(500).json({ erreur: error.message });
+  }
+
+};
+
+module.exports = { verifJTW, duel, updateDuel, getDuels, deleteDuel };
