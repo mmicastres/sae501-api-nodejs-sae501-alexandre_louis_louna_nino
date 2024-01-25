@@ -13,8 +13,8 @@ const schema = Joi.object({
   id_util: Joi.number().integer().min(1),
   liste_perso: Joi.array().items(Joi.number()),
   localisation: Joi.object({
-    x: Joi.number().float(),
-    y: Joi.number().float(),
+    x: Joi.number(),
+    y: Joi.number(),
   }),
   nbr_km_total: Joi.number().integer(),
   nbr_km_today: Joi.number().integer(),
@@ -32,8 +32,8 @@ const schemakilometre_total = Joi.object({
   nbr_km_total: Joi.number().integer(),
   nbr_km_today: Joi.number().integer(),
   localisation: Joi.object({
-    x: Joi.number().float(),
-    y: Joi.number().float(),
+    x: Joi.number(),
+    y: Joi.number(),
   }),
 });
 
@@ -69,7 +69,6 @@ const getToken = async (id_util) => {
   const secretKey = "clesecrete";
 
   const token = jwt.sign(payload, secretKey, { expiresIn: "100h" });
-
   return token;
 };
 // Le nombre de "salts" à générer
@@ -109,7 +108,7 @@ const checkPassword = async (plainPassword, hashedPassword) => {
 //liste de tous les utilisateurs
 const liste = async (req, res) => {
   const listeUtils = await modelUtils.listeUtilisateur();
-  console.log(listeUtils);
+  // console.log("listeUtils");
   res.json(listeUtils);
 };
 
@@ -252,17 +251,37 @@ const modifkilometres = async (req, res) => {
     const modifierUtil = await modelUtils.modifkilo(id_util, kilometres);
     console.log(modifierUtil);
 
-    res.json(
-      "Kilometre :" + kilometres.nbr_km_total,
-      "x :" + kilometres.localisation.x,
-      "y :" + kilometres.localisation.y,
-    );
+    res.json({
+      message: `x : ${kilometres.localisation.x}, y : ${kilometres.localisation.y}`,
+    });
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
   }
 };
 
+const detecterUtilisateursProximite = async (req, res) => {
+  try {
+    const id_util = req.params.idutil;
+    const utilisateur = await modelUtils.descriptionUtilisateur(id_util);
+
+    const { x: currentX, y: currentY } = utilisateur.localisation;
+
+    const utilisateursProximite =
+      await modelUtils.rechercherUtilisateursProximite(
+        id_util,
+        currentX,
+        currentY,
+      );
+
+    res.json({ utilisateursProximite });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      erreur: "Erreur lors de la détection des utilisateurs à proximité",
+    });
+  }
+};
 module.exports = {
   liste,
   detailUtil,
@@ -274,4 +293,5 @@ module.exports = {
   modifierUtil,
   modifkilometres,
   incrementerDuels,
+  detecterUtilisateursProximite,
 };

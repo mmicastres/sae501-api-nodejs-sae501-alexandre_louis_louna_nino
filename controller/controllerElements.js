@@ -22,7 +22,6 @@ function verifJTW(req, res, next) {
     });
   }
 }
-
 //liste de tous les elements
 const elements = async (req, res) => {
   try {

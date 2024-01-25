@@ -10,7 +10,6 @@ const DuelRouter = express.Router();
 const controllerDuel = require("../controller/controllerDuel.js");
 DuelRouter.post("/duel", controllerDuel.verifJTW, controllerDuel.duel);
 
-
 // Les grades
 const controllerGrade = require("../controller/controllerGrades.js");
 routerGrades.get("/grades", controllerGrade.verifJTW, controllerGrade.liste);
@@ -64,6 +63,10 @@ routerUtilisateurs.put(
   "/utilisateurs/:idutil/victoire",
   controllerUtils.verifJTW,
   controllerUtils.incrementerDuels,
+);
+routerUtilisateurs.get(
+  "/utilisateurs/:idutil/proximite",
+  controllerUtils.detecterUtilisateursProximite,
 );
 
 // //les elements

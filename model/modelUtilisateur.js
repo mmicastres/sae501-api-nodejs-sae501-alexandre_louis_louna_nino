@@ -51,6 +51,10 @@ const ajoutUtil = async (body) => {
     nbr_km_total: 0,
     nbr_km_today: 0,
     liste_perso: [],
+    localisation: {
+      x: 0,
+      y: 0,
+    },
   };
   const utilisateur = { ...defaultValues, ...body };
   let newutil = await dbUtils.insert(utilisateur);
@@ -295,6 +299,63 @@ const recevoirPersonnageAleatoire = async (id_util) => {
   }
 };
 
+// Fonction pour rechercher les utilisateurs à proximité dans la base de données
+const rechercherUtilisateursProximite = async (
+  currentUserId,
+  currentX,
+  currentY,
+) => {
+  try {
+    const tousLesUtilisateurs = await listeUtilisateur();
+    const utilisateursProximite = [];
+
+    const distanceMaximale = 10; // Définir la distance maximale en kilomètres
+
+    tousLesUtilisateurs.forEach((utilisateur) => {
+      if (utilisateur.id_util !== currentUserId) {
+        const { x, y } = utilisateur.localisation;
+
+        const distance = calculerDistanceHaversine(currentX, currentY, x, y);
+
+        if (distance <= distanceMaximale) {
+          utilisateursProximite.push({
+            id_util: utilisateur.id_util,
+            pseudo: utilisateur.pseudo,
+            distance: distance,
+          });
+        }
+      }
+    });
+
+    return utilisateursProximite;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Erreur lors de la recherche des utilisateurs à proximité");
+  }
+};
+
+// Fonction pour calculer la distance haversine entre deux points géographiques
+function calculerDistanceHaversine(lat1, lon1, lat2, lon2) {
+  const deg2rad = (deg) => deg * (Math.PI / 180);
+  const R = 6371; // Rayon de la Terre en kilomètres
+
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c; // Distance en kilomètres
+
+  return distance;
+}
+
 module.exports = {
   listeUtilisateur,
   descriptionUtilisateur,
@@ -309,4 +370,5 @@ module.exports = {
   maxId,
   incrementerDuelsGagnes,
   recevoirPersonnageAleatoire,
+  rechercherUtilisateursProximite,
 };
