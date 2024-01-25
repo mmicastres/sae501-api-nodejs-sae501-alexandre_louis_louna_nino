@@ -12,7 +12,10 @@ const schema = Joi.object({
   email: Joi.string().email().max(30).required(),
   id_util: Joi.number().integer().min(1),
   liste_perso: Joi.array().items(Joi.number()),
-  exp: Joi.number().integer(),
+  localisation: Joi.object({
+    x: Joi.number().float(),
+    y: Joi.number().float(),
+  }),
   nbr_km_total: Joi.number().integer(),
   nbr_km_today: Joi.number().integer(),
   duel_gagne: Joi.number().integer(),
@@ -28,6 +31,10 @@ const schemaco = Joi.object({
 const schemakilometre_total = Joi.object({
   nbr_km_total: Joi.number().integer(),
   nbr_km_today: Joi.number().integer(),
+  localisation: Joi.object({
+    x: Joi.number().float(),
+    y: Joi.number().float(),
+  }),
 });
 
 function verifJTW(req, res, next) {
@@ -195,6 +202,7 @@ const connexion = async (req, res) => {
     res.status(500).json({ erreur: "Erreur lors de la connexion" });
   }
 };
+
 //modification d'un utilisateur
 const modifierUtil = async (req, res) => {
   const utilisateur = req.body;
@@ -244,7 +252,11 @@ const modifkilometres = async (req, res) => {
     const modifierUtil = await modelUtils.modifkilo(id_util, kilometres);
     console.log(modifierUtil);
 
-    res.send("Kilometre :" + kilometres.nbr_km_total);
+    res.json(
+      "Kilometre :" + kilometres.nbr_km_total,
+      "x :" + kilometres.localisation.x,
+      "y :" + kilometres.localisation.y,
+    );
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
