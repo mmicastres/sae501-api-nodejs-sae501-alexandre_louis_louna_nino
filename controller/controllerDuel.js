@@ -1,18 +1,15 @@
 const modelDuel = require("../model/modelDuel.js");
-const modelUtilisateur = require("../model/modelUtilisateur.js");
 let jwt = require("jsonwebtoken");
 
 const Joi = require("joi");
 const schema = Joi.object({
   id_duel: Joi.number().min(1).integer().required(),
-  list_joueurs: Joi.array()
-    .items(
-      Joi.object({
-        id_joueur: Joi.number().integer().min(1).required(),
-        id_element: Joi.number().integer().min(1).required().allow(null),
-      }),
-    )
-    .required(),
+  list_joueurs: Joi.array().items(
+    Joi.object({
+      id_joueur: Joi.number().integer().min(1).required(),
+      id_element: Joi.number().integer().min(1).required().allow(null),
+    }),
+  ).required(),
   gagnant: Joi.number().integer().min(1).required().allow(null),
 });
 
@@ -39,8 +36,9 @@ function verifJTW(req, res, next) {
 }
 
 const duel = async (req, res) => {
+
   const maxId = await modelDuel.maxId();
-  const duelBody = { ...req.body, id_duel: maxId + 1 };
+  const duelBody = { ...req.body, id_duel: maxId + 1 }
   // console.log(duelBody);
   const { value, error } = schema.validate(duelBody);
   if (error == undefined) {
@@ -55,53 +53,34 @@ const duel = async (req, res) => {
 
 const getDuels = async (req, res) => {
   const duels = await modelDuel.getDuels();
-  res.send(duels);
+  res.json(duels);
 };
 
-const response = async (req, res) => {
-  const currentUserId = req.query.currentUserId;
-  const currentX = req.query.currentX;
-  const currentY = req.query.currentY;
-
-  try {
-    const utilisateursProximite =
-      await modelUtilisateur.rechercherUtilisateursProximite(
-        currentUserId,
-        currentX,
-        currentY,
-      );
-    const utilisateur1Duel = utilisateursProximite[0].want_duel;
-    const utilisateur2Duel = utilisateursProximite[1].want_duel;
-    console.log("utilisateur1Duel", utilisateur1Duel);
-    console.log("utilisateur2Duel", utilisateur2Duel);
-    if (utilisateur1Duel === utilisateur2Duel) {
-      res.status(200).json({ message: "True" });
-    } else {
-      res.status(200).json({ message: "Undes utilisateur a répondu False" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message:
-        "Une erreur est survenue lors de la comparaison des utilisateurs.",
-    });
-  }
+const getDuel = async (req, res) => {
+  const duel = await modelDuel.getDuel(req.params.idDuel);
+  res.json(duel);
 };
 
+const response = async (req, res) => { };
+
+
+// Mettre à jour le duel
 const updateDuel = async (req, res) => {
-  // const duel = await modelDuel.getDuel();
-  // console.log(req.body);
+  const duelBody = req.body
 
-  const modifierDuel = await modelDuel.updateDuel(req.body);
-  res.send(modifierDuel);
+  const { value, error } = schema.validate(duelBody);
 
-  // if (error == undefined) {
-  //   console.log(duel);
-  //   res.send(" Duel " + req.body.id_duel);
-  // } else {
-  //   console.log(error);
-  //   res.status(406).json({ Erreur: error.details });
-  // }
+  if (error == undefined) {
+    const duel = await modelDuel.updateDuel(req.body);
+    if (duel === false) {
+      res.status(404).json({ success: false, message: "Duel inexistant" });
+    } else {
+      res.json({ success: true, message: "Duel inexistant" });
+    }
+  } else {
+    console.log(error);
+    res.status(406).json({ Erreur: error.details });
+  }
 };
 
 // Suppresion d'un duel
@@ -115,6 +94,7 @@ const deleteDuel = async (req, res) => {
   } catch (error) {
     res.status(500).json({ erreur: error.message });
   }
+
 };
 
-module.exports = { verifJTW, duel, updateDuel, getDuels, response };
+module.exports = { verifJTW, duel, updateDuel, getDuels, getDuel, deleteDuel };

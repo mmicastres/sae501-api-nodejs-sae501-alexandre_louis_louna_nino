@@ -13,30 +13,52 @@ const ajoutDuel = async (body) => {
   return newduel;
 };
 
-// const compareReponse = async () => {};
+const responseDuel = async () => { };
 
+// Afficher la liste des duels
 const getDuels = async () => {
   const query = {
     selector: {},
-    fields: [],
+    fields: ["list_joueurs", "id_duel", "gagnant"],
   };
   let duel = await dbDuel.find(query);
   return duel.docs;
 };
 
-// Obtenir les informations sur un duel
-const updateDuel = async (duel) => {
-  // const
-  // const query = {
-  //   selector: { id_duel: parseInt(idDuel) },
-  //   fields: [],
-  // };
+// Afficher un seul duel
+const getDuel = async (idDuel) => {
+  const query = {
+    selector: { id_duel: parseInt(idDuel) },
+    fields: ["list_joueurs", "id_duel", "gagnant"],
+  };
+  let duel = await dbDuel.find(query);
+  if (duel.docs[0]) {
+    return duel.docs[0];
+  } else {
+    return { message: "Ce duel n'existe pas" };
+  }
 
-  // let perso = await dbDuel.find(query);
-  // return perso.docs;
-  // console.log("duel");
+}
 
-  return duel;
+// Mettre à jour un duel
+const updateDuel = async (duelBody) => {
+  var modifDuel = { ...duelBody };
+  const query = {
+    selector: { id_duel: parseInt(duelBody.id_duel) },
+    fields: ["_id", "_rev"],
+  };
+
+  let duel = await dbDuel.find(query);
+  // duelBody = {duelBody, duel.docs[0]}
+  if (duel.docs[0]) {
+    modifDuel = { ...modifDuel, _id: duel.docs[0]._id, _rev: duel.docs[0]._rev }
+    console.log(modifDuel);
+    await dbDuel.insert(modifDuel);
+    return true;
+  } else {
+    return false
+  }
+
 };
 
 // Supprimer un duel
@@ -88,6 +110,7 @@ const maxId = async () => {
 module.exports = {
   ajoutDuel,
   getDuels,
+  getDuel,
   updateDuel,
   deleteDuel,
   maxId
