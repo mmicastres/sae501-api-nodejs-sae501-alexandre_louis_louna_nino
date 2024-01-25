@@ -5,12 +5,14 @@ let jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const schema = Joi.object({
   id_duel: Joi.number().min(1).integer().required(),
-  list_joueurs: Joi.array().items(
-    Joi.object({
-      id_joueur: Joi.number().integer().min(1).required(),
-      id_element: Joi.number().integer().min(1).required().allow(null),
-    }),
-  ).required(),
+  list_joueurs: Joi.array()
+    .items(
+      Joi.object({
+        id_joueur: Joi.number().integer().min(1).required(),
+        id_element: Joi.number().integer().min(1).required().allow(null),
+      }),
+    )
+    .required(),
   gagnant: Joi.number().integer().min(1).required().allow(null),
 });
 
@@ -37,9 +39,8 @@ function verifJTW(req, res, next) {
 }
 
 const duel = async (req, res) => {
-
   const maxId = await modelDuel.maxId();
-  const duelBody = { ...req.body, id_duel: maxId + 1 }
+  const duelBody = { ...req.body, id_duel: maxId + 1 };
   // console.log(duelBody);
   const { value, error } = schema.validate(duelBody);
   if (error == undefined) {
@@ -57,7 +58,6 @@ const getDuels = async (req, res) => {
   res.send(duels);
 };
 
-<<<<<<< HEAD
 const response = async (req, res) => {
   const currentUserId = req.query.currentUserId;
   const currentX = req.query.currentX;
@@ -87,9 +87,6 @@ const response = async (req, res) => {
     });
   }
 };
-=======
-const response = async (req, res) => { };
->>>>>>> 890baf3ddbaaafcfc48b4a391139e4338d1f7d6b
 
 const updateDuel = async (req, res) => {
   // const duel = await modelDuel.getDuel();
@@ -107,9 +104,6 @@ const updateDuel = async (req, res) => {
   // }
 };
 
-<<<<<<< HEAD
-module.exports = { verifJTW, duel, updateDuel, getDuels, response };
-=======
 // Suppresion d'un duel
 const deleteDuel = async (req, res) => {
   try {
@@ -121,8 +115,6 @@ const deleteDuel = async (req, res) => {
   } catch (error) {
     res.status(500).json({ erreur: error.message });
   }
-
 };
 
-module.exports = { verifJTW, duel, updateDuel, getDuels, deleteDuel };
->>>>>>> 890baf3ddbaaafcfc48b4a391139e4338d1f7d6b
+module.exports = { verifJTW, duel, updateDuel, getDuels, response };
