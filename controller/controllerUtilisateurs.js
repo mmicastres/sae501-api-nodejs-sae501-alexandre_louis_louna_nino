@@ -170,7 +170,10 @@ const ajout = async (req, res) => {
 const supprimerUtil = async (req, res) => {
   try {
     await modelUtils.supprimerUtil(req.params.idutil);
-    res.send("Suppression du personnage avec l'id_util " + req.params.idutil);
+    res.json({
+      success: true,
+      message: "Suppression du personnage avec l'id_util " + req.params.idutil,
+    });
   } catch (error) {
     res.status(500).json({ erreur: error.message });
   }
@@ -216,7 +219,10 @@ const modifierUtil = async (req, res) => {
       const modifierUtil = await modelUtils.modifierUtilisateur(modifUtil);
       // console.log(modifierUtil);
     }
-    res.send("Modification du l'utilisateur " + utilisateur.pseudo);
+    res.json({
+      success: true,
+      message: "Modification du l'utilisateur " + utilisateur.pseudo,
+    });
   } else {
     console.log(error);
     res.status(406).json({ Erreur: error.details });
@@ -252,6 +258,7 @@ const modifkilometres = async (req, res) => {
     console.log(modifierUtil);
 
     res.json({
+      success: true,
       message: `x : ${kilometres.localisation.x}, y : ${kilometres.localisation.y}`,
     });
   } else {
