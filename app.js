@@ -6,8 +6,7 @@ const route = require("./router/router.js");
 app.use(route.routerUtilisateurs);
 app.use(route.routerGrades);
 app.use(route.ElementsRouter);
-app.use(route.PersoRouter);
-
+app.use(route.DuelRouter);
 app.get("/", function (req, res) {
   res.send("Hello Worlddddd2!");
 });

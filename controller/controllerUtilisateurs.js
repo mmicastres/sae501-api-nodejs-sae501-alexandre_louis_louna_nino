@@ -19,6 +19,7 @@ const schema = Joi.object({
   nbr_km_total: Joi.number().integer(),
   nbr_km_today: Joi.number().integer(),
   duel_gagne: Joi.number().integer(),
+  want_duel: Joi.boolean(),
 });
 
 const schemaco = Joi.object({
@@ -267,19 +268,16 @@ const modifkilometres = async (req, res) => {
   }
 };
 
+// Fonction pour détecter les utilisateurs à proximité
 const detecterUtilisateursProximite = async (req, res) => {
   try {
     const id_util = req.params.idutil;
     const utilisateur = await modelUtils.descriptionUtilisateur(id_util);
 
-    const { x: currentX, y: currentY } = utilisateur.localisation;
+    const { x, y } = utilisateur.localisation;
 
     const utilisateursProximite =
-      await modelUtils.rechercherUtilisateursProximite(
-        id_util,
-        currentX,
-        currentY,
-      );
+      await modelUtils.rechercherUtilisateursProximite(id_util, x, y);
 
     res.json({ utilisateursProximite });
   } catch (error) {
@@ -289,6 +287,27 @@ const detecterUtilisateursProximite = async (req, res) => {
     });
   }
 };
+
+// Modifier le statut want_duel
+const modifierStatutDuel = async (req, res) => {
+  const id_util = req.params.idutil;
+  const { want_duel } = req.body;
+
+  try {
+    await modelUtils.modifierStatutDuel(id_util, want_duel);
+    res.json({
+      success: true,
+      message: `Le statut want_duel de l'utilisateur avec l'id_util ${id_util} a été modifié.`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      erreur:
+        "Erreur lors de la modification du statut want_duel de l'utilisateur",
+    });
+  }
+};
+
 module.exports = {
   liste,
   detailUtil,
@@ -301,4 +320,5 @@ module.exports = {
   modifkilometres,
   incrementerDuels,
   detecterUtilisateursProximite,
+  modifierStatutDuel,
 };
