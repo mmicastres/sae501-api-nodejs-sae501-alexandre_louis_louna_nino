@@ -108,6 +108,47 @@ const maxId = async () => {
   }
 };
 
+// id le plus élevé des duels
+const userDuel = async (body) => {
+  // return body;
+  const query = {
+    selector: {
+      gagnant: null,
+      list_joueurs: {
+        $elemMatch: {
+          id_joueur: body.id_joueur,
+          id_element: null,
+        },
+      },
+    },
+    fields: ["list_joueurs", "id_duel", "gagnant"],
+  };
+  const result = await dbDuel.find(query);
+  if (result.docs[0]) {
+    return result.docs[0];
+  } else {
+    return null;
+  }
+  // try {
+  //   const query = {
+  //     selector: {},
+  //     fields: ["id_duel"],
+  //     sort: [{ id_duel: "desc" }],
+  //     limit: 1,
+  //   };
+  //   const result = await dbDuel.find(query);
+  //   if (result.docs.length > 0) {
+  //     const maxId = result.docs[0].id_duel;
+  //     return maxId;
+  //   } else {
+  //     return 0;
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  //   throw new Error("Erreur lors de la récupération de l'id le plus élevé");
+  // }
+};
+
 module.exports = {
   ajoutDuel,
   getDuels,
@@ -115,4 +156,5 @@ module.exports = {
   updateDuel,
   deleteDuel,
   maxId,
+  userDuel,
 };

@@ -131,6 +131,21 @@ const deleteDuel = async (req, res) => {
   }
 };
 
+// Ajouter l'élement choisi par l'utilisateur dans le duel
+const choixElement = async (req, res) => {
+  const userDuel = await modelDuel.userDuel(req.body);
+  res.json({ success: true, ok: userDuel });
+  // try {
+  //   await modelDuel.deleteDuel(req.params.idDuel);
+  //   res.json({
+  //     success: true,
+  //     message: "Suppression du duel n° " + req.params.idDuel,
+  //   });
+  // } catch (error) {
+  //   res.status(500).json({ erreur: error.message });
+  // }
+};
+
 module.exports = {
   verifJTW,
   duel,
@@ -139,4 +154,5 @@ module.exports = {
   getDuel,
   deleteDuel,
   response,
+  choixElement,
 };

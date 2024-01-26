@@ -126,6 +126,11 @@ DuelRouter.get(
   controllerDuel.getDuel,
 );
 DuelRouter.put("/duels", controllerDuel.verifJTW, controllerDuel.updateDuel);
+DuelRouter.put(
+  "/duels/elements",
+  controllerDuel.verifJTW,
+  controllerDuel.choixElement,
+);
 DuelRouter.delete(
   "/duels/:idDuel",
   controllerDuel.verifJTW,
