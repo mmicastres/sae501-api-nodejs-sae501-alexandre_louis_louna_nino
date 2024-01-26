@@ -134,7 +134,14 @@ const deleteDuel = async (req, res) => {
 // Ajouter l'élement choisi par l'utilisateur dans le duel
 const choixElement = async (req, res) => {
   const userDuel = await modelDuel.userDuel(req.body);
-  res.json({ success: true, ok: userDuel });
+
+  if (userDuel) {
+    // res.json({ success: true, message: userDuel });
+    const test = await modelDuel.setElement(userDuel, req.body);
+    res.json({ success: true, message: test });
+  } else {
+    res.status(404).json({ success: false, message: "Duel inexistant" });
+  }
   // try {
   //   await modelDuel.deleteDuel(req.params.idDuel);
   //   res.json({

@@ -1,3 +1,5 @@
+const { elements } = require("./modelElements");
+
 const nano = require("nano")(
   "http://desouttter_hiker:Pb70e3c7@couchdb-desouttter.alwaysdata.net:5984",
 );
@@ -121,7 +123,7 @@ const userDuel = async (body) => {
         },
       },
     },
-    fields: ["list_joueurs", "id_duel", "gagnant"],
+    fields: ["list_joueurs", "id_duel", "gagnant", "_id", "_rev"],
   };
   const result = await dbDuel.find(query);
   if (result.docs[0]) {
@@ -129,24 +131,19 @@ const userDuel = async (body) => {
   } else {
     return null;
   }
-  // try {
-  //   const query = {
-  //     selector: {},
-  //     fields: ["id_duel"],
-  //     sort: [{ id_duel: "desc" }],
-  //     limit: 1,
-  //   };
-  //   const result = await dbDuel.find(query);
-  //   if (result.docs.length > 0) {
-  //     const maxId = result.docs[0].id_duel;
-  //     return maxId;
-  //   } else {
-  //     return 0;
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  //   throw new Error("Erreur lors de la récupération de l'id le plus élevé");
-  // }
+};
+
+// Mettre à jour un duel
+const setElement = async (userDuel, body) => {
+  var modifDuel = { ...userDuel };
+  modifDuel.list_joueurs.forEach((joueur) => {
+    if (joueur.id_joueur == body.id_joueur) {
+      joueur.id_element = body.id_element;
+    }
+  });
+
+  const result = await dbDuel.insert(modifDuel);
+  return result;
 };
 
 module.exports = {
@@ -157,4 +154,5 @@ module.exports = {
   deleteDuel,
   maxId,
   userDuel,
+  setElement,
 };
