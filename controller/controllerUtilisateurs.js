@@ -274,14 +274,10 @@ const detecterUtilisateursProximite = async (req, res) => {
     const id_util = req.params.idutil;
     const utilisateur = await modelUtils.descriptionUtilisateur(id_util);
 
-    const { x: currentX, y: currentY } = utilisateur.localisation;
+    const { x, y } = utilisateur.localisation;
 
     const utilisateursProximite =
-      await modelUtils.rechercherUtilisateursProximite(
-        id_util,
-        currentX,
-        currentY,
-      );
+      await modelUtils.rechercherUtilisateursProximite(id_util, x, y);
 
     res.json({ utilisateursProximite });
   } catch (error) {

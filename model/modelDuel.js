@@ -13,7 +13,7 @@ const ajoutDuel = async (body) => {
   return newduel;
 };
 
-const responseDuel = async () => { };
+//const responseDuel = async () => { };
 
 // Afficher la liste des duels
 const getDuels = async () => {
@@ -37,8 +37,7 @@ const getDuel = async (idDuel) => {
   } else {
     return { message: "Ce duel n'existe pas" };
   }
-
-}
+};
 
 // Mettre à jour un duel
 const updateDuel = async (duelBody) => {
@@ -51,14 +50,17 @@ const updateDuel = async (duelBody) => {
   let duel = await dbDuel.find(query);
   // duelBody = {duelBody, duel.docs[0]}
   if (duel.docs[0]) {
-    modifDuel = { ...modifDuel, _id: duel.docs[0]._id, _rev: duel.docs[0]._rev }
+    modifDuel = {
+      ...modifDuel,
+      _id: duel.docs[0]._id,
+      _rev: duel.docs[0]._rev,
+    };
     console.log(modifDuel);
     await dbDuel.insert(modifDuel);
     return true;
   } else {
-    return false
+    return false;
   }
-
 };
 
 // Supprimer un duel
@@ -81,7 +83,6 @@ const deleteDuel = async (idDuel) => {
     throw new Error("Duel non trouvé");
   }
 };
-
 
 // id le plus élevé des duels
 const maxId = async () => {
@@ -113,5 +114,5 @@ module.exports = {
   getDuel,
   updateDuel,
   deleteDuel,
-  maxId
+  maxId,
 };

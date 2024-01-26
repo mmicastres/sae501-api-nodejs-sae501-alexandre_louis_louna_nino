@@ -17,7 +17,7 @@ const listeUtilisateur = async () => {
     fields: [],
   };
   let utilisateurs = await dbUtils.find(query);
-  console.log(utilisateurs);
+  //console.log(utilisateurs);
   return utilisateurs.docs;
 };
 
@@ -208,6 +208,9 @@ const modifkilo = async (id_util, body) => {
       pseudo: result.docs[0].pseudo,
       mdp: result.docs[0].mdp,
       email: result.docs[0].email,
+      localisation: result.docs[0].localisation,
+      nbr_km_today: result.docs[0].nbr_km_today,
+      nbr_km_total: result.docs[0].nbr_km_total,
     };
     console.log("kilo", modifUser);
 
@@ -358,6 +361,7 @@ function calculerDistanceHaversine(lat1, lon1, lat2, lon2) {
 
 // Modification du statut want_duel
 const modifierStatutDuel = async (id_util, want_duel) => {
+  console.log("want_duel", want_duel);
   const query = {
     selector: { id_util: parseInt(id_util) },
     fields: [],
@@ -365,10 +369,9 @@ const modifierStatutDuel = async (id_util, want_duel) => {
 
   try {
     const result = await dbUtils.find(query);
-    console.log(result);
+    //console.log("result", result);
     if (result.docs.length > 0) {
       const utilisateur = {
-        ...want_duel,
         _id: result.docs[0]._id,
         _rev: result.docs[0]._rev,
         id_util: result.docs[0].id_util,
@@ -378,6 +381,10 @@ const modifierStatutDuel = async (id_util, want_duel) => {
         pseudo: result.docs[0].pseudo,
         mdp: result.docs[0].mdp,
         email: result.docs[0].email,
+        localisation: result.docs[0].localisation,
+        nbr_km_today: result.docs[0].nbr_km_today,
+        nbr_km_total: result.docs[0].nbr_km_total,
+        want_duel: want_duel,
       };
 
       await dbUtils.insert(utilisateur);
