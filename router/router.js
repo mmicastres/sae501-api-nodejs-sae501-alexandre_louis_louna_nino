@@ -136,6 +136,11 @@ DuelRouter.delete(
   controllerDuel.verifJTW,
   controllerDuel.deleteDuel,
 );
+DuelRouter.put(
+  "/duels/:idDuel/gagnant",
+  controllerDuel.verifJTW,
+  controllerDuel.verifGagnant,
+);
 // DuelRouter.post("/duel/:idutil1/:idutil2", duelController.gererPropositionEtDuel);
 
 module.exports = {

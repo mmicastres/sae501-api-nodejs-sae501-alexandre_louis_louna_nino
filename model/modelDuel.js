@@ -146,6 +146,50 @@ const setElement = async (userDuel, body) => {
   return result;
 };
 
+// Définir le gagnant de la partie
+const setWinner = async (duelId) => {
+  const query = {
+    selector: { id_duel: parseInt(duelId) },
+    fields: ["list_joueurs", "id_duel", "gagnant"],
+  };
+  // Récupérer le duel spécifié par l'ID
+  let duel = await dbDuel.find(query);
+  console.log(duel);
+
+  // Assurez-vous que le duel est en cours et que les joueurs ont fait leur choix
+  if (
+    duel.gagnant === null &&
+    duel.list_joueurs.every((joueur) => joueur.id_element !== null)
+  ) {
+    const choixJoueur1 = duel.list_joueurs[0].id_element;
+    const choixJoueur2 = duel.list_joueurs[1].id_element;
+
+    // Logique de comparaison pour déterminer le gagnant
+    if (choixJoueur1 === choixJoueur2) {
+      // C'est un match nul
+      duel.gagnant = null;
+    } else if (
+      (choixJoueur1 === 1 && choixJoueur2 === 3) ||
+      (choixJoueur1 === 2 && choixJoueur2 === 1) ||
+      (choixJoueur1 === 3 && choixJoueur2 === 2)
+    ) {
+      // Joueur 1 gagne
+      duel.gagnant = duel.list_joueurs[0].id_joueur;
+    } else {
+      // Joueur 2 gagne
+      duel.gagnant = duel.list_joueurs[1].id_joueur;
+    }
+
+    // Mettre à jour le duel dans la base de données
+    // await dbDuel.put(duel);
+
+    return duel; // Retourner le duel mis à jour
+  } else {
+    // Le duel est déjà terminé ou les joueurs n'ont pas encore fait leur choix
+    return duel;
+  }
+};
+
 module.exports = {
   ajoutDuel,
   getDuels,
@@ -155,4 +199,5 @@ module.exports = {
   maxId,
   userDuel,
   setElement,
+  setWinner,
 };
