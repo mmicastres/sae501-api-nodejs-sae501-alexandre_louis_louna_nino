@@ -208,9 +208,6 @@ const modifkilo = async (id_util, body) => {
       pseudo: result.docs[0].pseudo,
       mdp: result.docs[0].mdp,
       email: result.docs[0].email,
-      localisation: result.docs[0].localisation,
-      nbr_km_today: result.docs[0].nbr_km_today,
-      nbr_km_total: result.docs[0].nbr_km_total,
     };
     console.log("kilo", modifUser);
 
