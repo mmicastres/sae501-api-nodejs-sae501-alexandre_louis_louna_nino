@@ -132,6 +132,22 @@ const deleteDuel = async (req, res) => {
 };
 
 // Ajouter l'élement choisi par l'utilisateur dans le duel
+const verifGagnant = async (req, res) => {
+  console.log(req.params.idDuel);
+  const gagnant = await modelDuel.setWinner(req.params.idDuel);
+  res.json({ success: true, message: gagnant });
+  // res.send(req.params.idDuel);
+  // const userDuel = await modelDuel.userDuel(req.body);
+  // if (userDuel) {
+  //   // res.json({ success: true, message: userDuel });
+  //   const test = await modelDuel.setElement(userDuel, req.body);
+  //   res.json({ success: true, message: test });
+  // } else {
+  //   res.status(404).json({ success: false, message: "Duel inexistant" });
+  // }
+};
+
+// Ajouter l'élement choisi par l'utilisateur dans le duel
 const choixElement = async (req, res) => {
   const userDuel = await modelDuel.userDuel(req.body);
 
@@ -142,15 +158,6 @@ const choixElement = async (req, res) => {
   } else {
     res.status(404).json({ success: false, message: "Duel inexistant" });
   }
-  // try {
-  //   await modelDuel.deleteDuel(req.params.idDuel);
-  //   res.json({
-  //     success: true,
-  //     message: "Suppression du duel n° " + req.params.idDuel,
-  //   });
-  // } catch (error) {
-  //   res.status(500).json({ erreur: error.message });
-  // }
 };
 
 module.exports = {
@@ -162,4 +169,5 @@ module.exports = {
   deleteDuel,
   response,
   choixElement,
+  verifGagnant,
 };

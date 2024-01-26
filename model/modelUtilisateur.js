@@ -208,6 +208,7 @@ const modifkilo = async (id_util, body) => {
       pseudo: result.docs[0].pseudo,
       mdp: result.docs[0].mdp,
       email: result.docs[0].email,
+      want_duel: result.docs[0].want_duel,
     };
     console.log("kilo", modifUser);
 
