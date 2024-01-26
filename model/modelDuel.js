@@ -119,7 +119,6 @@ const userDuel = async (body) => {
       list_joueurs: {
         $elemMatch: {
           id_joueur: body.id_joueur,
-          id_element: null,
         },
       },
     },
@@ -143,6 +142,7 @@ const setElement = async (userDuel, body) => {
   });
 
   const result = await dbDuel.insert(modifDuel);
+  console.log(result);
   return result;
 };
 
@@ -154,39 +154,39 @@ const setWinner = async (duelId) => {
   };
   // Récupérer le duel spécifié par l'ID
   let duel = await dbDuel.find(query);
-  console.log(duel);
+  let modifDuel = { ...duel.docs[0] };
 
   // Assurez-vous que le duel est en cours et que les joueurs ont fait leur choix
   if (
-    duel.gagnant === null &&
-    duel.list_joueurs.every((joueur) => joueur.id_element !== null)
+    modifDuel.gagnant === null &&
+    modifDuel.list_joueurs.every((joueur) => joueur.id_element !== null)
   ) {
-    const choixJoueur1 = duel.list_joueurs[0].id_element;
-    const choixJoueur2 = duel.list_joueurs[1].id_element;
+    const choixJoueur1 = modifDuel.list_joueurs[0].id_element;
+    const choixJoueur2 = modifDuel.list_joueurs[1].id_element;
 
     // Logique de comparaison pour déterminer le gagnant
     if (choixJoueur1 === choixJoueur2) {
       // C'est un match nul
-      duel.gagnant = null;
+      modifDuel.gagnant = null;
     } else if (
-      (choixJoueur1 === 1 && choixJoueur2 === 3) ||
-      (choixJoueur1 === 2 && choixJoueur2 === 1) ||
-      (choixJoueur1 === 3 && choixJoueur2 === 2)
+      (choixJoueur1 === 1 && choixJoueur2 === 3) || // feu bat la terre
+      (choixJoueur1 === 2 && choixJoueur2 === 1) || // eau bat le feu
+      (choixJoueur1 === 3 && choixJoueur2 === 2) // terre bat l'eau
     ) {
       // Joueur 1 gagne
-      duel.gagnant = duel.list_joueurs[0].id_joueur;
+      modifDuel.gagnant = modifDuel.list_joueurs[0].id_joueur;
     } else {
       // Joueur 2 gagne
-      duel.gagnant = duel.list_joueurs[1].id_joueur;
+      modifDuel.gagnant = modifDuel.list_joueurs[1].id_joueur;
     }
 
-    // Mettre à jour le duel dans la base de données
-    // await dbDuel.put(duel);
-
-    return duel; // Retourner le duel mis à jour
+    // Mettre à jour le modifDuel dans la base de données
+    // await dbmodifDuel.put(modifDuel);
+    console.log(modifDuel);
+    return modifDuel; // Retourner le duel mis à jour
   } else {
     // Le duel est déjà terminé ou les joueurs n'ont pas encore fait leur choix
-    return duel;
+    return false;
   }
 };
 
